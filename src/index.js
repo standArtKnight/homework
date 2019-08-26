@@ -20,9 +20,11 @@ function forEach(array, fn) {
  */
 function map(array, fn) {
     let newArr = [];
+
     for (let i = 0; i < array.length; i++) {
         newArr.push(fn(array[i], i, array));
     }
+
     return newArr;
 }
 
@@ -34,10 +36,12 @@ function map(array, fn) {
  */
 function reduce(array, fn, initial) {
     let i = 0;
+
     initial = initial || array[i++];
     for (; i < array.length; i++) {
         initial = fn(initial, array[i], i, array);
     }
+
     return initial;
 }
 
@@ -51,9 +55,13 @@ function reduce(array, fn, initial) {
  */
 function upperProps(obj) {
     let keyArr = [];
+
     for (let key in obj) {
-        keyArr.push(key.toUpperCase());
+        if ({}.hasOwnProperty.call(obj, key)) {
+            keyArr.push(key.toUpperCase());
+        }
     }
+
     return keyArr;
 }
 
@@ -92,7 +100,15 @@ function slice(array, from = 0, to = array.length) {
  Proxy должен перехватывать все попытки записи значений свойств и возводить это значение в квадрат
  */
 function createProxy(obj) {
+    obj = new Proxy(obj, {
+        get(target, prop) {
+            if (prop in target) {
+                return target[prop] * target[prop];
+            }
+        }
+    })
 
+    return obj;
 }
 
 export {
