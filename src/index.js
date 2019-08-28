@@ -102,41 +102,20 @@ function calculator(number = 0) {
 
     let result = {
         sum: (...args) => {
-            let res = number;
-
-            for (let i = 0; i < args.length; i++) {
-                res += args[i];
-            }
-
-            return res;
+            return args.reduce((prev, curr) => prev + curr, number);
         },
         dif: (...args) => {
-            let res = number;
-
-            for (let i = 0; i < args.length; i++) {
-                res -= args[i];
-            }
-
-            return res;
+            return args.reduce((prev, curr) => prev - curr, number);
         },
         div: (...args) => {
-            let res = number;
-
-            for (let i = 0; i < args.length; i++) {
-                if (args[i] == 0) throw new Error("division by 0");
-                res /= args[i];
-            }
-
-            return res;
+            return args.reduce((prev, curr) => {
+                    if (curr == 0) throw new Error("division by 0");
+                    return prev / curr;
+                },
+                number);
         },
         mul: (...args) => {
-            let res = number;
-
-            for (let i = 0; i < args.length; i++) {
-                res *= args[i];
-            }
-
-            return res;
+            return args.reduce((prev, curr) => prev * curr, number);
         }
     }
 
