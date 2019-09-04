@@ -11,9 +11,10 @@
    createDivWithText('loftschool') // создаст элемент div, поместит в него 'loftschool' и вернет созданный элемент
  */
 function createDivWithText(text) {
-    let result = document.createElement("div");
+    let result = document.createElement('div');
+
     result.innerHTML = text;
-    
+
     return result;
 }
 
@@ -50,9 +51,11 @@ function prepend(what, where) {
  */
 function findAllPSiblings(where) {
     let result = [];
-    for (let i = 0; where.childNodes.length; i++) {
-        if (where.childNodes[i] && where.childNodes[i] == "P" && where.childNodes[i - 1]) result.push(where.childNodes[i - 1]);
+
+    for (const node of where.children) {
+        if (node.nextElementSibling && node.nextElementSibling.tagName == 'P') result.push(node);
     }
+
     return result;
 }
 
@@ -74,10 +77,10 @@ function findAllPSiblings(where) {
    findError(document.body) // функция должна вернуть массив с элементами 'привет' и 'loftschool'
  */
 function findError(where) {
-    var result = [];
+    let result = [];
 
-    for (var child of where.childNodes) {
-        result.push(child.innerText);
+    for (const node of where.children) {
+        result.push(node.innerText);
     }
 
     return result;
@@ -95,7 +98,11 @@ function findError(where) {
    После выполнения функции, дерево <div></div>привет<p></p>loftchool!!!
    должно быть преобразовано в <div></div><p></p>
  */
-function deleteTextNodes(where) {}
+function deleteTextNodes(where) {
+    for (const node of where.childNodes) {
+        if (node.nodeType === 3) node.remove();
+    }
+}
 
 /*
  Задание 6:
@@ -108,7 +115,18 @@ function deleteTextNodes(where) {}
    После выполнения функции, дерево <span> <div> <b>привет</b> </div> <p>loftchool</p> !!!</span>
    должно быть преобразовано в <span><div><b></b></div><p></p></span>
  */
-function deleteTextNodesRecursive(where) {}
+function deleteTextNodesRecursive(where) {
+    let childs = where.childNodes;
+
+    for (let i = childs.length -1; i >= 0; i--) {
+        if (childs[i].nodeType === 3) {
+            childs[i].remove();
+        }
+        if (childs[i] && childs[i].children) {
+            deleteTextNodesRecursive(childs[i]);
+        }
+    }
+}
 
 /*
  Задание 7 *:
@@ -129,8 +147,43 @@ function deleteTextNodesRecursive(where) {}
      classes: { "some-class-1": 2, "some-class-2": 1 },
      texts: 3
    }
+
  */
-function collectDOMStat(root) {}
+function collectDOMStat(root) {
+    let result = {
+        tags: {},
+        classes: {},
+        texts: 0
+    }
+
+    const getChild = (domElement) => {
+        for (const node of domElement.childNodes) {
+
+            if (node.nodeType === 3) {
+                result.texts += 1;
+            } else {
+                let tag = node.tagName;
+
+                result.tags[tag] = result.tags[tag] ? result.tags[tag] += 1 : result.tags[tag] = 1;
+
+                if (node.classList.length) {
+
+                    let nodeClass = node.classList;
+
+                    for (let i = 0; i < nodeClass.length; i++) {
+                        result.classes[nodeClass[i]] = result.classes[nodeClass[i]] ? result.classes[nodeClass[i]] += 1 : result.classes[nodeClass[i]] = 1;
+                    }
+                }
+            }
+            
+            if (node.children) getChild(node);
+        }
+    }
+
+    getChild(root);
+
+    return result;
+}
 
 /*
  Задание 8 *:
@@ -164,7 +217,8 @@ function collectDOMStat(root) {}
      nodes: [div]
    }
  */
-function observeChildNodes(where, fn) {}
+function observeChildNodes(where, fn) {
+}
 
 export {
     createDivWithText,
