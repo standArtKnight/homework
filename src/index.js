@@ -100,7 +100,7 @@ function findError(where) {
  */
 function deleteTextNodes(where) {
     for (const node of where.childNodes) {
-        if (node.nodeType === 3) node.remove();
+        if (node.nodeType === document.TEXT_NODE) node.remove();
     }
 }
 
@@ -119,7 +119,7 @@ function deleteTextNodesRecursive(where) {
     let childs = where.childNodes;
 
     for (let i = childs.length -1; i >= 0; i--) {
-        if (childs[i].nodeType === 3) {
+        if (childs[i].nodeType === document.TEXT_NODE) {
             childs[i].remove();
         }
         if (childs[i] && childs[i].children) {
@@ -156,10 +156,10 @@ function collectDOMStat(root) {
         texts: 0
     }
 
-    const getChild = (domElement) => {
-        for (const node of domElement.childNodes) {
+    const getStats = (tree) => {
+        for (const node of tree.childNodes) {
 
-            if (node.nodeType === 3) {
+            if (node.nodeType === Node.TEXT_NODE) {
                 result.texts += 1;
             } else {
                 let tag = node.tagName;
@@ -176,11 +176,11 @@ function collectDOMStat(root) {
                 }
             }
             
-            if (node.children) getChild(node);
+            if (node.children) getStats(node);
         }
     }
 
-    getChild(root);
+    getStats(root);
 
     return result;
 }
@@ -218,6 +218,29 @@ function collectDOMStat(root) {
    }
  */
 function observeChildNodes(where, fn) {
+    let observer = new MutationObserver((mutation) => {
+        let myType = '';
+        let nodeList = [];
+        mutation.forEach((el) => {
+            if (el.addedNodes.length > 0) {
+                myType = 'insert';
+                for (let node of el.addedNodes) {
+                    nodeList.push(node);
+                }
+            } else if (el.removedNodes.length > 0) {
+                myType = 'remove';
+                for (let node of el.removedNodes) {
+                    nodeList.push(node);
+                }
+            }
+        })
+
+        fn({type: myType, nodes: nodeList})
+    });
+
+    let config = {'childList': true, 'subtree': true};
+
+    observer.observe(where, config);
 }
 
 export {
