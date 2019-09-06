@@ -1,5 +1,8 @@
 /* Задание со звездочкой */
 
+const randomNumber = (min = 0, max = 100) => {
+    return Math.round((max - min) * Math.random()) + min;
+}
 /*
  Создайте страницу с кнопкой.
  При нажатии на кнопку должен создаваться div со случайными размерами, цветом и позицией на экране
@@ -15,7 +18,12 @@
    const newDiv = document.createElement('div');
    homeworkContainer.appendChild(newDiv);
  */
+
 const homeworkContainer = document.querySelector('#homework-container');
+// const myButton = document.createElement('button');
+// myButton.id = 'addDiv';
+// myButton.innerText = 'Создать новый Div';
+// homeworkContainer.append(myButton);
 
 /*
  Функция должна создавать и возвращать новый div с классом draggable-div и случайными размерами/цветом/позицией
@@ -27,6 +35,15 @@ const homeworkContainer = document.querySelector('#homework-container');
    homeworkContainer.appendChild(newDiv);
  */
 function createDiv() {
+    const myDiv = document.createElement('div');
+    myDiv.className = 'draggable-div';
+    myDiv.style.position = 'relative'
+    myDiv.style.width = randomNumber() + 'px';
+    myDiv.style.heigth = randomNumber() + 'px';
+    myDiv.style.top = randomNumber() + 'px';
+    myDiv.style.left = randomNumber() + 'px';
+    myDiv.style.backgroundColor = 'red';
+    return myDiv;
 }
 
 /*
@@ -37,12 +54,11 @@ function createDiv() {
    homeworkContainer.appendChild(newDiv);
    addListeners(newDiv);
  */
-function addListeners(target) {
-}
+function addListeners(target) {}
 
 let addDivButton = homeworkContainer.querySelector('#addDiv');
 
-addDivButton.addEventListener('click', function() {
+addDivButton.addEventListener('click', function () {
     // создать новый div
     const div = createDiv();
 
