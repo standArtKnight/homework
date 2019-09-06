@@ -39,7 +39,7 @@ function createDiv() {
     myDiv.className = 'draggable-div';
     myDiv.style.position = 'relative'
     myDiv.style.width = randomNumber() + 'px';
-    myDiv.style.heigth = randomNumber() + 'px';
+    myDiv.style.height = randomNumber() + 'px';
     myDiv.style.top = randomNumber() + 'px';
     myDiv.style.left = randomNumber() + 'px';
     myDiv.style.backgroundColor = 'red';
@@ -54,7 +54,8 @@ function createDiv() {
    homeworkContainer.appendChild(newDiv);
    addListeners(newDiv);
  */
-function addListeners(target) {}
+function addListeners(target) {
+}
 
 let addDivButton = homeworkContainer.querySelector('#addDiv');
 
