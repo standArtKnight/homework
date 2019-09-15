@@ -96,9 +96,7 @@
           .then((elements) => {
             loadingBlock.style.display = 'none';
             filterBlock.style.display = 'inline';
-            for (let {
-                name
-              } of elements) {
+            for (let {name} of elements) {
               cities.push(name);
             }
           })
