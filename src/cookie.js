@@ -40,7 +40,7 @@ const addButton = homeworkContainer.querySelector('#add-button');
 // таблица со списком cookie
 const listTable = homeworkContainer.querySelector('#list-table tbody');
 
-const addRow = (tableRef, name, value) => {
+function addRow (tableRef, name, value) {
   let row = document.createElement('tr'),
     nameCol = document.createElement('td'),
     valueCol = document.createElement('td'),
@@ -124,24 +124,25 @@ filterNameInput.addEventListener('keyup', function () {
   }
 });
 
-addButton.addEventListener('click', (event) => {
+addButton.addEventListener('click', () => {
   // здесь можно обработать нажатие на кнопку "добавить cookie"
-  event.preventDefault();
 
-  if (checkingTable(addNameInput.value).status) {
-    if (addValueInput.value.indexOf(filterNameInput.value) >= 0) {
-      checkingTable(addNameInput.value).element.firstElementChild.nextElementSibling.textContent = addValueInput.value;
+  document.cookie = addNameInput.value + '=' + addValueInput.value;
+
+  if (addNameInput.value.indexOf(filterNameInput.value) >= 0 || addValueInput.value.indexOf(filterNameInput.value) >= 0) {
+    if (checkingTable(addNameInput.value).status) {
+      if (addValueInput.value.indexOf(filterNameInput.value) >= 0) {
+        checkingTable(addNameInput.value).element.firstElementChild.nextElementSibling.textContent = addValueInput.value;
+      } else {
+        checkingTable(addNameInput.value).element.remove();
+      } 
     } else {
-      checkingTable(addNameInput.value).element.remove();
+      addRow(listTable, addNameInput.value, addValueInput.value);
     }
-  } else if (addNameInput.value.indexOf(filterNameInput.value) >= 0 || addValueInput.value.indexOf(filterNameInput.value) >= 0) {
-    addRow(listTable, addNameInput.value, addValueInput.value);
-  }
+  } 
 
-  document.cookie = `${addNameInput.value}=${addValueInput.value}`
-
-  addNameInput.value = '';
-  addValueInput.value = '';
+  // addNameInput.value = '';
+  // addValueInput.value = '';
 });
 
 (() => {
