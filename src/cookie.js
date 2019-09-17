@@ -52,7 +52,7 @@ function objectFromCookie() {
     }, {});
 }
 
-function addRow(tableRef, name, value) {
+function addRow(name, value) {
     let row = document.createElement('tr'),
         nameCol = document.createElement('td'),
         valueCol = document.createElement('td'),
@@ -61,37 +61,48 @@ function addRow(tableRef, name, value) {
 
     nameCol.textContent = name;
     valueCol.textContent = value;
-
     deletButton.textContent = 'Удалить';
 
     deletButton.addEventListener('click', () => {
-        tableRef.removeChild(row);
+        listTable.removeChild(row);
         document.cookie = `${name}= ; max-age=-1`;
     })
 
     buttonCol.appendChild(deletButton);
-
     row.append(nameCol, valueCol, buttonCol);
-
-    tableRef.append(row);
+    listTable.append(row);
 }
 
 function updateTable() {
     listTable.innerHTML = '';
     COOKIE = objectFromCookie();
-
+    /*
     if (filterNameInput.value != '') {
         for (let key in COOKIE) {
             if (key.indexOf(filterNameInput.value) >= 0 ||
                 COOKIE[key].indexOf(filterNameInput.value) >= 0) {
-                addRow(listTable, key, COOKIE[key]);
+                addRow(key, COOKIE[key]);
             } else {
                 delete COOKIE[key];
             }
         }
     } else {
         for (let key in COOKIE) {
-            addRow(listTable, key, COOKIE[key]);
+            addRow(key, COOKIE[key]);
+        }
+    }
+    */
+
+    for (let key in COOKIE) {
+        if (filterNameInput.value != '') {
+            if (key.indexOf(filterNameInput.value) >= 0 ||
+                COOKIE[key].indexOf(filterNameInput.value) >= 0) {
+                addRow(key, COOKIE[key]);
+            } else {
+                delete COOKIE[key];
+            }
+        } else {
+            addRow(key, COOKIE[key]);
         }
     }
 }
@@ -112,4 +123,5 @@ addButton.addEventListener('click', () => {
     updateTable();
 });
 
+// Первая загрузка таблицы
 updateTable();
