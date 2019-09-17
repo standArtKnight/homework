@@ -40,6 +40,8 @@ const addButton = homeworkContainer.querySelector('#add-button');
 // таблица со списком cookie
 const listTable = homeworkContainer.querySelector('#list-table tbody');
 
+let COOKIE = objectFromCookie();
+
 function objectFromCookie() {
   return document.cookie.split('; ').reduce((prev, current) => {
     const [name, value] = current.split('=');
@@ -48,7 +50,7 @@ function objectFromCookie() {
   }, {});
 };
 
-function addRow (tableRef, name, value) {
+function addRow(tableRef, name, value) {
   let row = document.createElement('tr'),
     nameCol = document.createElement('td'),
     valueCol = document.createElement('td'),
@@ -72,12 +74,23 @@ function addRow (tableRef, name, value) {
   tableRef.append(row);
 }
 
-function updateTable (objRef) {
-  
+function updateTable() {
   listTable.innerHTML = '';
+  COOKIE = objectFromCookie();
 
-  for (let elem in objRef) {
-    addRow(listTable, elem, objRef[elem]);
+  if (filterNameInput.value != '') {
+    for (let key in COOKIE) {
+      if (key.indexOf(filterNameInput.value) >= 0 || 
+          COOKIE[key].indexOf(filterNameInput.value) >= 0) {
+        addRow(listTable, key, COOKIE[key]);
+      } else {
+        delete COOKIE[key];
+      }
+    }
+  } else {
+    for (let key in COOKIE) {
+      addRow(listTable, key, COOKIE[key]);
+    }
   }
 }
 
@@ -86,30 +99,18 @@ function updateTable (objRef) {
 
 filterNameInput.addEventListener('keyup', function () {
   // здесь можно обработать нажатия на клавиши внутри текстового поля для фильтрации cookie
-
-  const cookieObj = objectFromCookie();
-
-  if (filterNameInput.value != '') {
-    for (let elem in cookieObj) {
-      if (elem.indexOf(filterNameInput.value) >= 0 || cookieObj[elem].indexOf(filterNameInput
-          .value) >= 0) {
-        addRow(listTable, elem, cookieObj[elem]);
-      }
-    }
-  } else {
-    for (let elem in cookieObj) {
-      addRow(listTable, elem, cookieObj[elem]);
-    }
-  }
+  updateTable();
 });
 
 addButton.addEventListener('click', () => {
   // здесь можно обработать нажатие на кнопку "добавить cookie"
-
   document.cookie = addNameInput.value + '=' + addValueInput.value;
-
-  const cookieObj = objectFromCookie();
-  updateTable(cookieObj);
+  for (const key in COOKIE) {
+    if (key === addNameInput.value) {
+      COOKIE[key] = addValueInput.value;
+    }
+  }
+  updateTable();
 });
 
-updateTable(objectFromCookie());
+updateTable();
